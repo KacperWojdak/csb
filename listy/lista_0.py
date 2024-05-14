@@ -1,24 +1,37 @@
 import numpy as np
 
-def calculate_variance(X, a, b):
-    # Oblicz wariancję oryginalnej zmiennej losowej X
+# Definiujemy funkcję, która oblicza wariancję przekształconej zmiennej losowej
+def variance_transformed(a, b, X):
+    # Wartość oczekiwana X
+    E_X = np.mean(X)
+    
+    # Wariancja X
     var_X = np.var(X, ddof=1)
     
-    # Przekształć zmienną losową X na aX + b
-    transformed_X = a * X + b
+    # Przekształcona zmienna losowa Y = aX + b
+    Y = a * X + b
     
-    # Oblicz wariancję przekształconej zmiennej losowej
-    var_transformed_X = np.var(transformed_X, ddof=1)
+    # Wartość oczekiwana Y
+    E_Y = np.mean(Y)
     
-    return var_X, var_transformed_X
+    # Wariancja Y
+    var_Y = np.var(Y, ddof=1)
+    
+    # Wariancja przekształconej zmiennej losowej zgodnie z teoretycznym wzorem
+    theoretical_var_Y = a**2 * var_X
+    
+    return var_Y, theoretical_var_Y
 
 # Przykładowe dane
-X = np.random.normal(0, 1, 1000)  # Próbki z rozkładu normalnego
-a = 3
+X = np.random.normal(0, 1, 1000)  # Losowe dane z rozkładu normalnego
+a = 2
 b = 5
 
-var_X, var_transformed_X = calculate_variance(X, a, b)
+# Obliczanie wariancji przekształconej zmiennej losowej
+empirical_var_Y, theoretical_var_Y = variance_transformed(a, b, X)
 
-print(f"Variance of original X: {var_X}")
-print(f"Variance of transformed X (aX + b): {var_transformed_X}")
-print(f"a^2 * Variance of X: {a**2 * var_X}")
+print(f"Empiryczna wariancja Y: {empirical_var_Y}")
+print(f"Teoretyczna wariancja Y: {theoretical_var_Y}")
+
+# Sprawdzenie, czy wartości są zbliżone
+np.isclose(empirical_var_Y, theoretical_var_Y)
